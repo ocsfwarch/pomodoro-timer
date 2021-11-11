@@ -3,6 +3,7 @@ import useInterval from "../utils/useInterval";
 import BreakControl from "./BreakControl";
 import FocusControl from "./FocusControl";
 import TimerControl from "./TimerControl";
+import TimerDisplay from "./TimerDisplay";
 
 // These functions are defined outside of the component to insure they do not have access to state
 // and are, therefore more likely to be pure.
@@ -40,11 +41,13 @@ function nextSession(focusDuration, breakDuration) {
       return {
         label: "On Break",
         timeRemaining: breakDuration * 60,
+        sessionTime: breakDuration,
       };
     }
     return {
       label: "Focusing",
       timeRemaining: focusDuration * 60,
+      sessionTime: focusDuration,
     };
   };
 }
@@ -94,6 +97,7 @@ function Pomodoro() {
             return {
               label: "Focusing",
               timeRemaining: focusDuration * 60,
+              sessionTime: focusDuration,
             };
           }
           return prevStateSession;
@@ -135,16 +139,11 @@ function Pomodoro() {
       <div>
         {/* TODO: This area should show only when there is an active focus or break - i.e. the session is running or is paused */}
         <div className="row mb-2">
-          <div className="col">
-            {/* TODO: Update message below to include current session (Focusing or On Break) total duration */}
-            <h2 data-testid="session-title">
-              {session?.label} for 25:00 minutes
-            </h2>
-            {/* TODO: Update message below correctly format the time remaining in the current session */}
-            <p className="lead" data-testid="session-sub-title">
-              {session?.timeRemaining} remaining
-            </p>
-          </div>
+          <TimerDisplay
+            sessionLabel={session?.label}
+            sessionTime={session?.sessionTime}
+            sessionTimeToGo={session?.timeRemaining}
+          />
         </div>
         <div className="row mb-2">
           <div className="col">
