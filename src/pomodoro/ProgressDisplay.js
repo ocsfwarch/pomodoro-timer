@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-const ProgressDisplay = ({ sessionTime, sessionTimeToGo }) => {
+const ProgressDisplay = ({ isTimerRunning, sessionTime, sessionTimeToGo }) => {
   const [width, setWidth] = useState("0%");
   const [now, setNow] = useState(0);
 
@@ -12,7 +12,7 @@ const ProgressDisplay = ({ sessionTime, sessionTimeToGo }) => {
   }, [sessionTime, sessionTimeToGo]);
 
   return (
-    <div className="col">
+    <div className={isTimerRunning ? "col" : "col hide"}>
       <div className="progress" style={{ height: "20px" }}>
         <div
           className="progress-bar"

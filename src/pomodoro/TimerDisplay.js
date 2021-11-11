@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { minutesToDuration } from "../utils/duration";
 
-const TimerDisplay = ({ sessionLabel, sessionTime, sessionTimeToGo }) => {
+const TimerDisplay = ({
+  isTimerRunning,
+  sessionLabel,
+  sessionTime,
+  sessionTimeToGo,
+}) => {
   const [displayTime, setDisplayTime] = useState("00:00");
   const [displayTimeToGo, setDisplayTimeToGo] = useState("00:00");
 
@@ -14,7 +19,7 @@ const TimerDisplay = ({ sessionLabel, sessionTime, sessionTimeToGo }) => {
   //}, [sessionTimeToGo]);
 
   return (
-    <div className="col">
+    <div className={isTimerRunning ? "col" : "col hide"}>
       {/* TODO: Update message below to include current session (Focusing or On Break) total duration */}
       <h2 data-testid="session-title">
         {sessionLabel} for {displayTime} minutes

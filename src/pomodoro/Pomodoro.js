@@ -90,6 +90,7 @@ function Pomodoro() {
   function playPause() {
     setIsTimerRunning((prevState) => {
       const nextState = !prevState;
+      console.log(`prevState = ${prevState}, nextState = ${nextState}`);
       if (nextState) {
         setSession((prevStateSession) => {
           // If the timer is starting and the previous session is null,
@@ -141,6 +142,7 @@ function Pomodoro() {
         {/* TODO: This area should show only when there is an active focus or break - i.e. the session is running or is paused */}
         <div className="row mb-2">
           <TimerDisplay
+            isTimerRunning={isTimerRunning}
             sessionLabel={session?.label}
             sessionTime={session?.sessionTime}
             sessionTimeToGo={session?.timeRemaining}
