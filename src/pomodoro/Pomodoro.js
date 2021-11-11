@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import classNames from "../utils/class-names";
 import useInterval from "../utils/useInterval";
+import BreakControl from "./BreakControl";
+import FocusControl from "./FocusControl";
 
 // These functions are defined outside of the component to insure they do not have access to state
 // and are, therefore more likely to be pure.
@@ -54,22 +56,28 @@ function Pomodoro() {
   const [session, setSession] = useState(null);
 
   // ToDo: Allow the user to adjust the focus and break duration.
-  const focusDuration = 25;
-  const breakDuration = 5;
+  const [focusDuration, setFocusDuration] = useState(5);
+  const [breakDuration, setBreakDuration] = useState(1);
+  const MAXFocus = 60;
+  const MINFocus = 5;
+  const MAXBreak = 5;
+  const MINBreak = 1;
+  const INTERVAL = 100;
 
   /**
    * Custom hook that invokes the callback function every second
    *
    * NOTE: You will not need to make changes to the callback function
    */
-  useInterval(() => {
+  useInterval(
+    () => {
       if (session.timeRemaining === 0) {
         new Audio("https://bigsoundbank.com/UPLOAD/mp3/1482.mp3").play();
         return setSession(nextSession(focusDuration, breakDuration));
       }
       return setSession(nextTick);
     },
-    isTimerRunning ? 1000 : null
+    isTimerRunning ? INTERVAL : null
   );
 
   /**
@@ -95,63 +103,31 @@ function Pomodoro() {
     });
   }
 
+  function updateFocusDuration(val) {
+    if (val >= MINFocus && val <= MAXFocus) {
+      setFocusDuration(val);
+    }
+  }
+
+  function updateBreakDuration(val) {
+    if (val >= MINBreak && val <= MAXBreak) {
+      setBreakDuration(val);
+    }
+  }
+
   return (
     <div className="pomodoro">
       <div className="row">
-        <div className="col">
-          <div className="input-group input-group-lg mb-2">
-            <span className="input-group-text" data-testid="duration-focus">
-              {/* TODO: Update this text to display the current focus session duration */}
-              Focus Duration: 25:00
-            </span>
-            <div className="input-group-append">
-              {/* TODO: Implement decreasing focus duration and disable during a focus or break session */}
-              <button
-                type="button"
-                className="btn btn-secondary"
-                data-testid="decrease-focus"
-              >
-                <span className="oi oi-minus" />
-              </button>
-              {/* TODO: Implement increasing focus duration  and disable during a focus or break session */}
-              <button
-                type="button"
-                className="btn btn-secondary"
-                data-testid="increase-focus"
-              >
-                <span className="oi oi-plus" />
-              </button>
-            </div>
-          </div>
-        </div>
-        <div className="col">
-          <div className="float-right">
-            <div className="input-group input-group-lg mb-2">
-              <span className="input-group-text" data-testid="duration-break">
-                {/* TODO: Update this text to display the current break session duration */}
-                Break Duration: 05:00
-              </span>
-              <div className="input-group-append">
-                {/* TODO: Implement decreasing break duration and disable during a focus or break session*/}
-                <button
-                  type="button"
-                  className="btn btn-secondary"
-                  data-testid="decrease-break"
-                >
-                  <span className="oi oi-minus" />
-                </button>
-                {/* TODO: Implement increasing break duration and disable during a focus or break session*/}
-                <button
-                  type="button"
-                  className="btn btn-secondary"
-                  data-testid="increase-break"
-                >
-                  <span className="oi oi-plus" />
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
+        <FocusControl
+          focusDuration={focusDuration}
+          updateFocusDuration={updateFocusDuration}
+          isDisabled={isTimerRunning}
+        />
+        <BreakControl
+          breakDuration={breakDuration}
+          updateBreakDuration={updateBreakDuration}
+          isDisabled={isTimerRunning}
+        />
       </div>
       <div className="row">
         <div className="col">
