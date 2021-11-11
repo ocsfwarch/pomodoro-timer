@@ -4,6 +4,7 @@ import BreakControl from "./BreakControl";
 import FocusControl from "./FocusControl";
 import TimerControl from "./TimerControl";
 import TimerDisplay from "./TimerDisplay";
+import ProgressDisplay from "./ProgressDisplay";
 
 // These functions are defined outside of the component to insure they do not have access to state
 // and are, therefore more likely to be pure.
@@ -146,18 +147,11 @@ function Pomodoro() {
           />
         </div>
         <div className="row mb-2">
-          <div className="col">
-            <div className="progress" style={{ height: "20px" }}>
-              <div
-                className="progress-bar"
-                role="progressbar"
-                aria-valuemin="0"
-                aria-valuemax="100"
-                aria-valuenow="0" // TODO: Increase aria-valuenow as elapsed time increases
-                style={{ width: "0%" }} // TODO: Increase width % as elapsed time increases
-              />
-            </div>
-          </div>
+          <ProgressDisplay
+            isTimerRunning={isTimerRunning}
+            sessionTime={session?.sessionTime}
+            sessionTimeToGo={session?.timeRemaining}
+          />
         </div>
       </div>
     </div>
