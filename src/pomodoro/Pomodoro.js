@@ -159,7 +159,6 @@ function Pomodoro() {
           <TimerDisplay
             isTimerRunning={isTimerRunning}
             isSessionActive={isSessionActive}
-            sessionStop={sessionStop}
             sessionLabel={session?.label}
             sessionTime={session?.sessionTime}
             sessionTimeToGo={session?.timeRemaining}
