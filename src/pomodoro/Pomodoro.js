@@ -58,7 +58,6 @@ function Pomodoro() {
   const [isTimerRunning, setIsTimerRunning] = useState(false);
   // The current session - null where there is no session running
   const [session, setSession] = useState(null);
-  const [sessionStop, setSessionStop] = useState(false);
   const [isSessionActive, setIsSessionActive] = useState(false);
 
   // ToDo: Allow the user to adjust the focus and break duration.
@@ -88,7 +87,6 @@ function Pomodoro() {
   function stopSession() {
     setIsTimerRunning(() => false);
     setSession(() => null);
-    setSessionStop(() => true);
     setIsSessionActive(() => false);
   }
   /**q
@@ -103,7 +101,6 @@ function Pomodoro() {
           // If the timer is starting and the previous session is null,
           // start a focusing session.
           if (prevStateSession === null) {
-            setSessionStop(false);
             setIsSessionActive(true);
             return {
               label: "Focusing",
