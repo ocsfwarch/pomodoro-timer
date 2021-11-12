@@ -68,7 +68,6 @@ function Pomodoro() {
   const MINFocus = 5;
   const MAXBreak = 15;
   const MINBreak = 1;
-  const INTERVAL = 1000;
 
   /**
    * Custom hook that invokes the callback function every second
@@ -83,7 +82,7 @@ function Pomodoro() {
       }
       return setSession(nextTick);
     },
-    isTimerRunning ? INTERVAL : null
+    isTimerRunning ? 1000 : null
   );
 
   function stopSession() {
