@@ -1,33 +1,44 @@
 import React, { useState, useEffect } from "react";
-import { minutesToDuration } from "../utils/duration";
+import { minutesToDuration, secondsToDuration } from "../utils/duration";
 
 const TimerDisplay = ({
   isTimerRunning,
+  isSessionActive,
+  sessionStop,
   sessionLabel,
   sessionTime,
   sessionTimeToGo,
 }) => {
-  const [displayTime, setDisplayTime] = useState("00:00");
   const [displayTimeToGo, setDisplayTimeToGo] = useState("00:00");
+  const [sessionTitle, setSessionTitle] = useState(
+    isTimerRunning && sessionLabel && sessionTime
+      ? `${sessionLabel} for ${minutesToDuration(sessionTime)} minutes`
+      : "Focusing for 25:00 minutes"
+  );
 
-  //useEffect(() => {
-  //  setDisplayTime(minutesToDuration(sessionTime));
-  //}, [sessionTime]);
+  useEffect(() => {
+    if (sessionLabel && sessionTime) {
+      setSessionTitle(
+        () => `${sessionLabel} for ${minutesToDuration(sessionTime)} minutes`
+      );
+    }
+  }, [isTimerRunning, sessionStop, sessionLabel, sessionTime]);
 
-  //useEffect(() => {
-  //  setDisplayTimeToGo(minutesToDuration(sessionTimeToGo / 60));
-  //}, [sessionTimeToGo]);
+  useEffect(() => {
+    setDisplayTimeToGo(secondsToDuration(sessionTimeToGo));
+  }, [sessionTimeToGo]);
 
   return (
-    <div className={isTimerRunning ? "col" : "col hide"}>
+    <div className={sessionLabel ? "col" : "col hide"}>
       {/* TODO: Update message below to include current session (Focusing or On Break) total duration */}
-      <h2 data-testid="session-title">
-        {sessionLabel} for {displayTime} minutes
-      </h2>
+      <h2 data-testid={sessionLabel ? "session-title" : ""}>{sessionTitle}</h2>
       {/* TODO: Update message below correctly format the time remaining in the current session */}
-      <p className="lead" data-testid="session-sub-title">
+      <p className="lead" data-testid={sessionLabel ? "session-sub-title" : ""}>
         {displayTimeToGo} remaining
       </p>
+      <h1 className={!isTimerRunning && isSessionActive ? "" : "hide"}>
+        PAUSED
+      </h1>
     </div>
   );
 };

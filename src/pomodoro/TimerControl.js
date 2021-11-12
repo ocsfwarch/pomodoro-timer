@@ -1,7 +1,16 @@
 import React from "react";
 import classNames from "../utils/class-names";
 
-const TimerControl = ({ playPause, isTimerRunning }) => {
+const TimerControl = ({
+  playPause,
+  isTimerRunning,
+  isDisabled,
+  stopSession,
+}) => {
+  const handleSessionStop = (event) => {
+    event.preventDefault();
+    stopSession();
+  };
   return (
     <div className="col">
       <div
@@ -31,6 +40,8 @@ const TimerControl = ({ playPause, isTimerRunning }) => {
           className="btn btn-secondary"
           data-testid="stop"
           title="Stop the session"
+          onClick={handleSessionStop}
+          disabled={!isDisabled}
         >
           <span className="oi oi-media-stop" />
         </button>

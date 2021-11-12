@@ -58,15 +58,17 @@ function Pomodoro() {
   const [isTimerRunning, setIsTimerRunning] = useState(false);
   // The current session - null where there is no session running
   const [session, setSession] = useState(null);
+  const [sessionStop, setSessionStop] = useState(false);
+  const [isSessionActive, setIsSessionActive] = useState(false);
 
   // ToDo: Allow the user to adjust the focus and break duration.
-  const [focusDuration, setFocusDuration] = useState(5);
-  const [breakDuration, setBreakDuration] = useState(1);
+  const [focusDuration, setFocusDuration] = useState(25);
+  const [breakDuration, setBreakDuration] = useState(5);
   const MAXFocus = 60;
   const MINFocus = 5;
-  const MAXBreak = 5;
+  const MAXBreak = 15;
   const MINBreak = 1;
-  const INTERVAL = 100;
+  const INTERVAL = 1000;
 
   /**
    * Custom hook that invokes the callback function every second
@@ -84,25 +86,33 @@ function Pomodoro() {
     isTimerRunning ? INTERVAL : null
   );
 
-  /**
+  function stopSession() {
+    setIsTimerRunning(() => false);
+    setSession(() => null);
+    setSessionStop(() => true);
+    setIsSessionActive(() => false);
+  }
+  /**q
    * Called whenever the play/pause button is clicked.
    */
   function playPause() {
     setIsTimerRunning((prevState) => {
       const nextState = !prevState;
-      console.log(`prevState = ${prevState}, nextState = ${nextState}`);
+
       if (nextState) {
         setSession((prevStateSession) => {
           // If the timer is starting and the previous session is null,
           // start a focusing session.
           if (prevStateSession === null) {
+            setSessionStop(false);
+            setIsSessionActive(true);
             return {
               label: "Focusing",
-              timeRemaining: focusDuration * 60,
-              sessionTime: focusDuration,
+              timeRemaining: +focusDuration * 60,
+              sessionTime: +focusDuration,
             };
           }
-          return prevStateSession;
+          return { ...prevStateSession };
         });
       }
       return nextState;
@@ -111,13 +121,13 @@ function Pomodoro() {
 
   function updateFocusDuration(val) {
     if (val >= MINFocus && val <= MAXFocus) {
-      setFocusDuration(val);
+      setFocusDuration(() => val);
     }
   }
 
   function updateBreakDuration(val) {
     if (val >= MINBreak && val <= MAXBreak) {
-      setBreakDuration(val);
+      setBreakDuration(() => val);
     }
   }
 
@@ -127,22 +137,29 @@ function Pomodoro() {
         <FocusControl
           focusDuration={focusDuration}
           updateFocusDuration={updateFocusDuration}
-          isDisabled={isTimerRunning}
+          isDisabled={isSessionActive}
         />
         <BreakControl
           breakDuration={breakDuration}
           updateBreakDuration={updateBreakDuration}
-          isDisabled={isTimerRunning}
+          isDisabled={isSessionActive}
         />
       </div>
       <div className="row">
-        <TimerControl playPause={playPause} isTimerRunning={isTimerRunning} />{" "}
+        <TimerControl
+          playPause={playPause}
+          isTimerRunning={isTimerRunning}
+          isDisabled={isTimerRunning}
+          stopSession={stopSession}
+        />
       </div>
       <div>
         {/* TODO: This area should show only when there is an active focus or break - i.e. the session is running or is paused */}
         <div className="row mb-2">
           <TimerDisplay
             isTimerRunning={isTimerRunning}
+            isSessionActive={isSessionActive}
+            sessionStop={sessionStop}
             sessionLabel={session?.label}
             sessionTime={session?.sessionTime}
             sessionTimeToGo={session?.timeRemaining}
@@ -150,7 +167,6 @@ function Pomodoro() {
         </div>
         <div className="row mb-2">
           <ProgressDisplay
-            isTimerRunning={isTimerRunning}
             sessionTime={session?.sessionTime}
             sessionTimeToGo={session?.timeRemaining}
           />

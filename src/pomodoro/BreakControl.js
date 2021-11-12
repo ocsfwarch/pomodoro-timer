@@ -5,9 +5,9 @@ const BreakControl = ({ breakDuration, updateBreakDuration, isDisabled }) => {
   const display = minutesToDuration(breakDuration);
   const handleDurationEvent = (strType) => {
     if (strType === "increase") {
-      updateBreakDuration(++breakDuration);
+      updateBreakDuration((breakDuration += 1));
     } else {
-      updateBreakDuration(--breakDuration);
+      updateBreakDuration((breakDuration -= 1));
     }
   };
   return (

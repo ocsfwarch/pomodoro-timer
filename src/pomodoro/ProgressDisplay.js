@@ -1,18 +1,19 @@
 import React, { useState, useEffect } from "react";
 
-const ProgressDisplay = ({ isTimerRunning, sessionTime, sessionTimeToGo }) => {
+const ProgressDisplay = ({ sessionTime, sessionTimeToGo }) => {
   const [width, setWidth] = useState("0%");
   const [now, setNow] = useState(0);
 
   useEffect(() => {
-    const current =
-      100 - Math.floor((sessionTimeToGo / (sessionTime * 60)) * 100);
+    const current = Number(
+      100 - (sessionTimeToGo / (sessionTime * 60)) * 100
+    ).toFixed(2);
     setWidth(`${current}%`);
-    setNow(current);
+    setNow(Math.floor(current));
   }, [sessionTime, sessionTimeToGo]);
 
   return (
-    <div className={isTimerRunning ? "col" : "col hide"}>
+    <div className={sessionTime ? "col" : "col hide"}>
       <div className="progress" style={{ height: "20px" }}>
         <div
           className="progress-bar"
